@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info span {
+            font-size: 16px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-section h2 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .action-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .action-description {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .profile-link {
+            color: #56ab2f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .profile-link:hover {
+            text-decoration: underline;
+        }
+
+        .upcoming-appointments {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .upcoming-appointments h3 {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .appointment-item {
+            padding: 15px;
+            border-left: 4px solid #56ab2f;
+            background: #f8f9fa;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .appointment-date {
+            font-weight: 600;
+            color: #56ab2f;
+            margin-bottom: 5px;
+        }
+
+        .appointment-doctor {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🏥 Patient Dashboard</h1>
+            <div class="user-info">
+                <span>Xin chào, <span th:text="${username}">Patient</span></span>
+                <form th:action="@{/login/logout}" method="get">
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2>Chào mừng đến với Bảng điều khiển Bệnh nhân</h2>
+            <p>Quản lý lịch khám, hồ sơ sức khỏe và thông tin cá nhân của bạn</p>
+        </div>
+
+        <!-- Profile Quick Link -->
+        <div class="profile-section">
+            <a th:href="@{/profile}" class="profile-link">👤 Xem và cập nhật hồ sơ cá nhân</a>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <div class="upcoming-appointments">
+            <h3>📅 Lịch khám sắp tới</h3>
+            <div class="appointment-item">
+                <div class="appointment-date">15/05/2024 - 09:00 AM</div>
+                <div class="appointment-doctor">Bác sĩ Nguyễn Văn A - Tim mạch</div>
+            </div>
+            <div class="appointment-item">
+                <div class="appointment-date">22/05/2024 - 02:00 PM</div>
+                <div class="appointment-doctor">Bác sĩ Trần Thị B - Nội tiết</div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number">-</div>
+                <div class="stat-label">Lịch khám đã đặt</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-number">-</div>
+                <div class="stat-label">Bệnh án</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">💊</div>
+                <div class="stat-number">-</div>
+                <div class="stat-label">Đơn thuốc</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🧪</div>
+                <div class="stat-number">-</div>
+                <div class="stat-label">Xét nghiệm</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions-grid">
+            <div class="action-card">
+                <h3 class="action-title">📅 Đặt lịch khám</h3>
+                <p class="action-description">Đặt lịch khám với bác sĩ chuyên khoa</p>
+                <a href="#" class="action-btn">Đặt lịch khám</a>
+            </div>
+            
+            <div class="action-card">
+                <h3 class="action-title">📋 Lịch sử khám bệnh</h3>
+                <p class="action-description">Xem lịch sử khám bệnh và bệnh án</p>
+                <a th:href="@{/patient/appointments}" class="action-btn">Xem lịch sử</a>
+            </div>
+            
+            <div class="action-card">
+                <h3 class="action-title">🧪 Kết quả xét nghiệm</h3>
+                <p class="action-description">Xem kết quả xét nghiệm gần đây</p>
+                <a th:href="@{/patient/medical-records}" class="action-btn">Xem kết quả</a>
+            </div>
+            
+            <div class="action-card">
+                <h3 class="action-title">💊 Đơn thuốc</h3>
+                <p class="action-description">Xem các đơn thuốc đã được kê</p>
+                <a href="#" class="action-btn">Xem đơn thuốc</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
