@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "doctors")
@@ -54,20 +56,20 @@ public class Doctor {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private java.time.LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private java.time.LocalDateTime updatedAt;
-//
-//    // Chuyên khoa
-//    @ManyToOne
-//    @JoinColumn(name = "specialty_id")
-//    private Specialty specialty;
+    private LocalDateTime updatedAt;
 
-//    // Danh sách lịch khám
-//    @OneToMany(mappedBy = "doctor")
-//    private List<Appointment> appointments;
+    // Chuyên khoa
+    @ManyToOne
+    @JoinColumn(name = "specialty_id")
+    private Specialty specialty;
+
+    // Danh sách lịch khám
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments;
 //
 //    // Danh sách bệnh án đã khám
 //    @OneToMany(mappedBy = "doctor")

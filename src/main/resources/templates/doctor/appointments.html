@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Doctor Appointments</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f5f7fb;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: orange;
+        }
+
+        .completed {
+            color: green;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h1>Lịch khám của bác sĩ</h1>
+
+<table>
+
+    <thead>
+
+    <tr>
+
+        <th>Bệnh nhân</th>
+
+        <th>Ngày</th>
+
+        <th>Giờ</th>
+
+        <th>Trạng thái</th>
+
+        <th>Hành động</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="appointment : ${appointments}">
+
+        <td th:text=
+                    "${appointment.patient.fullName}">
+        </td>
+
+        <td th:text=
+                    "${appointment.appointmentDate}">
+        </td>
+
+        <td th:text=
+                    "${appointment.appointmentTime}">
+        </td>
+
+        <td>
+
+            <span
+                    th:text="${appointment.status}"
+
+                    th:classappend="
+                    ${appointment.status.name()
+                    == 'PENDING'}
+                    ?
+                    'pending'
+                    :
+                    'completed'">
+
+            </span>
+
+        </td>
+
+        <td>
+
+            <a
+                    th:if=
+                            "${appointment.status.name()
+               == 'PENDING'}"
+
+                    th:href=
+                            "@{/doctor/examination(
+               appointmentId=${appointment.id})}"
+
+                    class="btn">
+
+                Khám bệnh
+
+            </a>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+</body>
+
+</html>

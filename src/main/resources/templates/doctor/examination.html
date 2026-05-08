@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Khám bệnh</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial,sans-serif;
+            background:#f5f7fb;
+            padding:30px;
+        }
+
+        .container{
+            max-width:900px;
+            margin:auto;
+            background:white;
+            padding:30px;
+            border-radius:12px;
+            box-shadow:0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        h1{
+            margin-bottom:25px;
+            color:#2c3e50;
+        }
+
+        .patient-info{
+            background:#ecf0f1;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:30px;
+        }
+
+        .patient-info p{
+            margin-bottom:10px;
+        }
+
+        .form-group{
+            margin-bottom:20px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:8px;
+            font-weight:bold;
+        }
+
+        textarea,
+        input{
+            width:100%;
+            padding:12px;
+            border:1px solid #ccc;
+            border-radius:8px;
+        }
+
+        textarea{
+            min-height:120px;
+            resize:vertical;
+        }
+
+        .medicine-box{
+            border:1px solid #ddd;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
+        }
+
+        .submit-btn{
+            width:100%;
+            padding:15px;
+            border:none;
+            background:#3498db;
+            color:white;
+            font-size:16px;
+            border-radius:8px;
+            cursor:pointer;
+        }
+
+        .submit-btn:hover{
+            background:#2980b9;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Khám bệnh</h1>
+
+    <!-- Thông tin bệnh nhân -->
+
+    <div class="patient-info">
+
+        <p>
+            <strong>Bệnh nhân:</strong>
+
+            <span
+                    th:text=
+                            "${appointment.patient.fullName}">
+            </span>
+        </p>
+
+        <p>
+            <strong>Ngày khám:</strong>
+
+            <span
+                    th:text=
+                            "${appointment.appointmentDate}">
+            </span>
+        </p>
+
+        <p>
+            <strong>Giờ khám:</strong>
+
+            <span
+                    th:text=
+                            "${appointment.appointmentTime}">
+            </span>
+        </p>
+
+    </div>
+
+    <!-- Form khám -->
+
+    <form
+            th:action=
+                    "@{/doctor/examination/complete}"
+
+            method="post">
+
+        <!-- appointment id -->
+
+        <input
+                type="hidden"
+                name="appointmentId"
+
+                th:value="${appointment.id}">
+
+        <!-- triệu chứng -->
+
+        <div class="form-group">
+
+            <label>Triệu chứng</label>
+
+            <textarea
+                    name="symptoms"
+                    required>
+            </textarea>
+
+        </div>
+
+        <!-- chẩn đoán -->
+
+        <div class="form-group">
+
+            <label>Chẩn đoán</label>
+
+            <textarea
+                    name="diagnosis"
+                    required>
+            </textarea>
+
+        </div>
+
+        <!-- kết luận -->
+
+        <div class="form-group">
+
+            <label>Kết luận</label>
+
+            <textarea
+                    name="conclusion">
+            </textarea>
+
+        </div>
+
+        <!-- thuốc -->
+
+        <h2 style="margin-bottom:20px;">
+            Kê thuốc
+        </h2>
+
+        <!-- thuốc 1 -->
+
+        <div class="medicine-box">
+
+            <div class="form-group">
+
+                <label>ID thuốc</label>
+
+                <input
+                        type="number"
+
+                        name="medicines[0].medicineId"
+
+                        required>
+            </div>
+
+            <div class="form-group">
+
+                <label>Số lượng</label>
+
+                <input
+                        type="number"
+
+                        name="medicines[0].quantity"
+
+                        required>
+            </div>
+
+            <div class="form-group">
+
+                <label>Hướng dẫn sử dụng</label>
+
+                <input
+                        type="text"
+
+                        name=
+                                "medicines[0].usageInstructions"
+
+                        required>
+            </div>
+
+        </div>
+
+        <!-- thuốc 2 -->
+
+        <div class="medicine-box">
+
+            <div class="form-group">
+
+                <label>ID thuốc</label>
+
+                <input
+                        type="number"
+
+                        name="medicines[1].medicineId">
+            </div>
+
+            <div class="form-group">
+
+                <label>Số lượng</label>
+
+                <input
+                        type="number"
+
+                        name="medicines[1].quantity">
+            </div>
+
+            <div class="form-group">
+
+                <label>Hướng dẫn sử dụng</label>
+
+                <input
+                        type="text"
+
+                        name=
+                                "medicines[1].usageInstructions">
+            </div>
+
+        </div>
+
+        <button
+                type="submit"
+                class="submit-btn">
+
+            Hoàn thành khám bệnh
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

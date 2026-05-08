@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+
+    </style>
+</head>
+<body>
+<div class="containet">
+    <h1>Đặt lịch khám</h1>
+
+    <!-- Success Message -->
+    <div th:if="${success}" class="alert success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert error">
+        <span th:text="${error}"></span>
+    </div>
+    <form th:action="@{/patient/appointments/book}" method="post">
+        <!-- Specialty -->
+        <div class="form-group">
+            <label>Chuyên khoa</label>
+
+            <select id="specialtySelect" required>
+                <option value="">-- Chọn chuyên khoa --</option>
+
+                <option
+                        th:each="specialty : ${specialties}"
+                        th:value="${specialty.id}"
+                        th:text="${specialty.name}">
+                </option>
+            </select>
+        </div>
+        <!-- Doctor -->
+        <div class="form-group">
+            <label>Bác sĩ</label>
+
+            <select name="doctorId" required>
+
+                <option value="">-- Chọn bác sĩ --</option>
+
+                <option
+                        th:each="doctor : ${doctors}"
+                        th:value="${doctor.id}"
+                        th:text="${doctor.fullName}">
+                </option>
+
+            </select>
+        </div>
+        <!-- Date -->
+        <div class="form-group">
+            <label>Ngày khám</label>
+
+            <input
+                    type="date"
+                    name="appointmentDate"
+                min = "2026-05-08"
+            >
+        </div>
+        <!-- Time -->
+        <div class="form-group">
+            <label>Giờ khám</label>
+
+            <input
+                    type="time"
+                    name="appointmentTime"
+                    required>
+        </div>
+        <!-- Note -->
+        <div class="form-group">
+            <label>Ghi chú</label>
+
+            <textarea
+                    name="note"
+                    placeholder="Mô tả triệu chứng..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+            Đặt lịch khám
+        </button>
+    </form>
+</div>
+</body>
+</html>
+

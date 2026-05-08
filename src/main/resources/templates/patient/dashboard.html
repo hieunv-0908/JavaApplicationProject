@@ -232,9 +232,10 @@
             <h1>🏥 Patient Dashboard</h1>
             <div class="user-info">
                 <span>Xin chào, <span th:text="${username}">Patient</span></span>
-                <form th:action="@{/login/logout}" method="get">
-                    <button type="submit">Logout</button>
-                </form>
+                <a th:href="@{/login/logout}"
+                   class="logout-btn">
+                    Logout
+                </a>
             </div>
         </div>
     </div>
@@ -254,13 +255,24 @@
         <!-- Upcoming Appointments -->
         <div class="upcoming-appointments">
             <h3>📅 Lịch khám sắp tới</h3>
-            <div class="appointment-item">
-                <div class="appointment-date">15/05/2024 - 09:00 AM</div>
-                <div class="appointment-doctor">Bác sĩ Nguyễn Văn A - Tim mạch</div>
+            <div th:if="${#lists.isEmpty(appointments)}">
+                Chưa có lịch khám nào
             </div>
-            <div class="appointment-item">
-                <div class="appointment-date">22/05/2024 - 02:00 PM</div>
-                <div class="appointment-doctor">Bác sĩ Trần Thị B - Nội tiết</div>
+
+            <div th:each="appointment : ${appointments}"
+                 class="appointment-item">
+
+                <div class="appointment-date">
+        <span th:text="${appointment.appointmentDate}"></span>
+                    -
+                    <span th:text="${appointment.appointmentTime}"></span>
+                </div>
+                <div class="appointment-doctor">
+                    Bác sĩ:
+                    <span th:text="${appointment.doctor.fullName}"></span>
+                    -
+                    <span th:text="${appointment.doctor.specialty.name}"></span>
+                </div>
             </div>
         </div>
 
@@ -296,13 +308,13 @@
             <div class="action-card">
                 <h3 class="action-title">📅 Đặt lịch khám</h3>
                 <p class="action-description">Đặt lịch khám với bác sĩ chuyên khoa</p>
-                <a href="#" class="action-btn">Đặt lịch khám</a>
+                <a th:href="@{/patient/appointments/book}" class="action-btn">Đặt lịch khám</a>
             </div>
             
             <div class="action-card">
                 <h3 class="action-title">📋 Lịch sử khám bệnh</h3>
                 <p class="action-description">Xem lịch sử khám bệnh và bệnh án</p>
-                <a th:href="@{/patient/appointments}" class="action-btn">Xem lịch sử</a>
+                <a th:href="@{/patient/appointments/book}" class="action-btn">Xem lịch sử</a>
             </div>
             
             <div class="action-card">

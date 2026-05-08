@@ -1,0 +1,15 @@
+Doctor login
+↓
+Mở ca khám pending
+↓
+Nhập triệu chứng
+↓
+Chọn thuốc
+↓
+Submit
+↓
+@Transactional bắt đầu
+↓
+Save medical record
+↓
+Save
