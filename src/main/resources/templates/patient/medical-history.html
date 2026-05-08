@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="record"
+     th:each="history : ${medicalHistories}">
+
+    <h2>
+        Lần khám ngày
+        <span th:text="${history.appointmentDate}">
+        </span>
+    </h2>
+
+    <p>
+        <strong>Bác sĩ:</strong>
+
+        <span th:text="${history.doctorName}">
+        </span>
+    </p>
+
+    <p>
+        <strong>Chuyên khoa:</strong>
+
+        <span th:text="${history.specialtyName}">
+        </span>
+    </p>
+
+    <p>
+        <strong>Triệu chứng:</strong>
+
+        <span th:text="${history.symptoms}">
+        </span>
+    </p>
+
+    <p>
+        <strong>Chẩn đoán:</strong>
+
+        <span th:text="${history.diagnosis}">
+        </span>
+    </p>
+
+    <p>
+        <strong>Kết luận:</strong>
+
+        <span th:text="${history.conclusion}">
+        </span>
+    </p>
+
+    <h3>Danh sách thuốc</h3>
+
+    <ul>
+
+        <li th:each="medicine : ${history.medicines}">
+
+            <strong>
+                <span th:text="${medicine.medicineName}">
+                </span>
+            </strong>
+
+            - SL:
+
+            <span th:text="${medicine.quantity}">
+            </span>
+
+            - Liều dùng:
+
+            <span th:text="${medicine.dosage}">
+            </span>
+
+            - HDSD:
+
+            <span
+                    th:text=
+                            "${medicine.usageInstructions}">
+            </span>
+
+        </li>
+
+    </ul>
+
+</div>
+</body>
+</html>

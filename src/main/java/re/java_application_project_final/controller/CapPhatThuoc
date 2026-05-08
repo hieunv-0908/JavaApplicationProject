@@ -1,0 +1,21 @@
+Doctor khám bệnh
+↓
+Kê đơn thuốc
+↓
+Prescription
+status = PENDING_DISPENSE
+↓
+Admin mở trang cấp phát
+↓
+Ấn xác nhận phát thuốc
+↓
+Kiểm tra tồn kho tất cả thuốc
+↓
+[Thiếu thuốc]
+→ THROW Exception
+→ ROLLBACK
+↓
+[Đủ thuốc]
+→ Trừ kho
+→ Update status = DISPENSED
+→ COMMIT

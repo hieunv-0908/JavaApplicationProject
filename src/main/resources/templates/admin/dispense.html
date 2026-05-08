@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cấp phát thuốc</title>
+</head>
+
+<body>
+
+<h1>Danh sách đơn chờ cấp phát</h1>
+
+<div th:if="${error}"
+     style="color:red;">
+
+    <span th:text="${error}">
+    </span>
+
+</div>
+
+<table border="1"
+       cellpadding="10">
+
+    <tr>
+        <th>ID</th>
+        <th>Bệnh nhân</th>
+        <th>Bác sĩ</th>
+        <th>Trạng thái</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="p : ${prescriptions}">
+
+        <td th:text="${p.id}">
+        </td>
+
+        <td th:text="${p.patient.fullName}">
+        </td>
+
+        <td th:text="${p.doctor.fullName}">
+        </td>
+
+        <td th:text="${p.status}">
+        </td>
+
+        <td>
+
+            <form
+                    th:action=
+                            "@{/admin/dispense/{id}(id=${p.id})}"
+
+                    method="post">
+
+                <button type="submit">
+
+                    Xác nhận phát thuốc
+
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
+
+</table>
+
+</body>
+</html>

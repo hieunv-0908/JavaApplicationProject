@@ -17,6 +17,7 @@ import re.java_application_project_final.model.entity.User;
 import re.java_application_project_final.service.AppointmentService;
 import re.java_application_project_final.service.DoctorService;
 import re.java_application_project_final.service.MedicalExaminationService;
+import re.java_application_project_final.service.MedicineService;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class DoctorController {
     private final MedicalExaminationService medicalExaminationService;
 
     private final AppointmentService appointmentService;
+
+    private final MedicineService medicineService;
 
     // Hàm kiểm tra doctor
     private boolean isDoctor(HttpSession session) {
@@ -165,6 +168,11 @@ public class DoctorController {
         model.addAttribute(
                 "appointment",
                 appointment
+        );
+
+        model.addAttribute(
+                "medicines",
+                medicineService.getAllMedicines()
         );
 
         return "doctor/examination";

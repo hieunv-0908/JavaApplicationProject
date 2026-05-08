@@ -23,6 +23,11 @@ public class MedicineService {
     public Page<Medicine> getAllMedicines(Pageable pageable) {
         return medicineRepository.findAll(pageable);
     }
+    public List<Medicine> getAllMedicines() {
+
+        return medicineRepository.findAll();
+    }
+
     public Page<Medicine> getActiveMedicines(Pageable pageable) {
         List<Medicine> medicines = medicineRepository.findAllActive();
         int start = (int) pageable.getOffset();

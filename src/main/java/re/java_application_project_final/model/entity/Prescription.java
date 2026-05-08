@@ -31,6 +31,9 @@ public class Prescription {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
+    @Enumerated(EnumType.STRING)
+    private PrescriptionStatus status;
+
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "prescription",

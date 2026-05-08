@@ -66,6 +66,10 @@ public class MedicalExaminationService {
                 Prescription.builder()
                         .medicalRecord(medicalRecord)
                         .doctor(doctor)
+                        .status(
+                                PrescriptionStatus
+                                        .PENDING_DISPENSE
+                        )
                         .patient(appointment.getPatient())
                         .createdAt(LocalDateTime.now())
                         .build();

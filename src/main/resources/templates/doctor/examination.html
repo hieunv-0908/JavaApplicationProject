@@ -202,14 +202,23 @@
 
             <div class="form-group">
 
-                <label>ID thuốc</label>
+                <select
+                        name="medicines[0].medicineId">
 
-                <input
-                        type="number"
+                    <option value="">
+                        -- Chọn thuốc --
+                    </option>
 
-                        name="medicines[0].medicineId"
+                    <option
+                            th:each="medicine : ${medicines}"
 
-                        required>
+                            th:value="${medicine.id}"
+
+                            th:text=
+                                    "${medicine.name}">
+                    </option>
+
+                </select>
             </div>
 
             <div class="form-group">
@@ -245,12 +254,23 @@
 
             <div class="form-group">
 
-                <label>ID thuốc</label>
+                <select
+                        name="medicines[0].medicineId">
 
-                <input
-                        type="number"
+                    <option value="">
+                        -- Chọn thuốc --
+                    </option>
 
-                        name="medicines[1].medicineId">
+                    <option
+                            th:each="medicine : ${medicines}"
+
+                            th:value="${medicine.id}"
+
+                            th:text=
+                                    "${medicine.name}">
+                    </option>
+
+                </select>
             </div>
 
             <div class="form-group">
