@@ -22,6 +22,22 @@ public class AppointmentService {
 
     private final DoctorRepository doctorRepository;
 
+    private final List<LocalTime> TIME_SLOTS =
+            List.of(
+
+                    LocalTime.of(8,0),
+                    LocalTime.of(8,30),
+                    LocalTime.of(9,0),
+                    LocalTime.of(9,30),
+                    LocalTime.of(10,0),
+
+                    LocalTime.of(13,0),
+                    LocalTime.of(13,30),
+                    LocalTime.of(14,0),
+                    LocalTime.of(14,30),
+                    LocalTime.of(15,0)
+            );
+
     @Transactional
     public void bookAppointment(
             Patient patient,
@@ -39,9 +55,7 @@ public class AppointmentService {
                         )
                 );
 
-        // =========================
         // CHECK NGÀY GIỜ QUÁ KHỨ
-        // =========================
 
         LocalDate today = LocalDate.now();
 
@@ -64,9 +78,7 @@ public class AppointmentService {
             );
         }
 
-        // =========================
         // CHECK TRÙNG LỊCH
-        // =========================
 
         boolean exists =
                 appointmentRepository
@@ -96,6 +108,39 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
+    public List<LocalTime>
+    getAvailableSlots(
+            Long doctorId,
+            LocalDate date
+    ) {
+
+        Doctor doctor =
+                doctorRepository
+                        .findById(doctorId)
+                        .orElseThrow();
+
+        List<Appointment> appointments =
+                appointmentRepository
+                        .findByDoctorAndAppointmentDate(
+                                doctor,
+                                date
+                        );
+
+        List<LocalTime> bookedSlots =
+                appointments.stream()
+                        .map(
+                                Appointment::getAppointmentTime
+                        )
+                        .toList();
+
+        return TIME_SLOTS.stream()
+                .filter(
+                        slot ->
+                                !bookedSlots.contains(slot)
+                )
+                .toList();
+    }
+
     public List<Appointment> getAppointmentsByPatient(
             Patient patient
     ) {
@@ -119,7 +164,6 @@ public class AppointmentService {
     public Appointment getAppointmentById(
             Long appointmentId
     ) {
-
         return appointmentRepository
                 .findById(appointmentId)
                 .orElseThrow(() ->

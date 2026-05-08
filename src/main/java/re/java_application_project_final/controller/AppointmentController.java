@@ -4,11 +4,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import re.java_application_project_final.model.dto.DoctorOptionDto;
+import re.java_application_project_final.model.entity.Doctor;
 import re.java_application_project_final.model.entity.Patient;
 import re.java_application_project_final.model.entity.User;
 import re.java_application_project_final.repository.DoctorRepository;
@@ -18,6 +17,7 @@ import re.java_application_project_final.service.PatientService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/patient/appointments")
@@ -37,11 +37,6 @@ public class AppointmentController {
         model.addAttribute(
                 "specialties",
                 specialtyRepository.findAllActive()
-        );
-
-        model.addAttribute(
-                "doctors",
-                doctorRepository.findAll()
         );
         return "patient/book-appointment";
     }
@@ -92,5 +87,57 @@ public class AppointmentController {
         }
 
         return "redirect:/patient/appointments/book";
+    }
+    @GetMapping("/doctors-by-specialty")
+    @ResponseBody
+    public List<DoctorOptionDto>
+    getDoctorsBySpecialty(
+            @RequestParam Long specialtyId
+    ) {
+
+        return doctorRepository
+                .findBySpecialtyId(
+                        specialtyId
+                )
+
+                .stream()
+
+                .map(doctor ->
+
+                        DoctorOptionDto
+                                .builder()
+                                .id(
+                                        doctor.getId()
+                                )
+                                .fullName(
+                                        doctor.getFullName()
+                                )
+                                .build()
+
+                )
+
+                .toList();
+    }
+
+    @GetMapping("/available-slots")
+    @ResponseBody
+    public List<String> getAvailableSlots(
+            @RequestParam Long doctorId,
+            @RequestParam String date
+    ) {
+        return appointmentService
+                .getAvailableSlots(
+                        doctorId,
+                        LocalDate.parse(date)
+                )
+                .stream()
+                .map(
+                        time -> time.format(
+                                java.time.format
+                                        .DateTimeFormatter
+                                        .ofPattern("HH:mm")
+                        )
+                )
+                .toList();
     }
 }
