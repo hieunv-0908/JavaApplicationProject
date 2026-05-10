@@ -86,7 +86,7 @@ public class AppointmentController {
             );
         }
 
-        return "redirect:/patient/appointments/book";
+        return "redirect:/patient/dashboard";
     }
     @GetMapping("/doctors-by-specialty")
     @ResponseBody
@@ -139,5 +139,55 @@ public class AppointmentController {
                         )
                 )
                 .toList();
+    }
+
+    @PostMapping("/cancel/{id}")
+    public String cancelAppointment(
+
+            @PathVariable Long id,
+
+            HttpSession session,
+
+            RedirectAttributes redirectAttributes
+    ) {
+
+        User user =
+                (User) session.getAttribute(
+                        "loggedInUser"
+                );
+
+        if (user == null) {
+
+            return "redirect:/login";
+        }
+
+        try {
+
+            Patient patient =
+                    patientService
+                            .getPatientByUser(user);
+
+            appointmentService
+                    .cancelAppointment(
+                            id,
+                            patient
+                    );
+
+            redirectAttributes
+                    .addFlashAttribute(
+                            "success",
+                            "Hủy lịch thành công"
+                    );
+
+        } catch (Exception e) {
+
+            redirectAttributes
+                    .addFlashAttribute(
+                            "error",
+                            e.getMessage()
+                    );
+        }
+
+        return "redirect:/patient/dashboard";
     }
 }

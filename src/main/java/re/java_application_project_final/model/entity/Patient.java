@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -46,11 +47,11 @@ public class Patient {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private java.time.LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private java.time.LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
 //    // Một bệnh nhân có nhiều lịch khám
 //    // Appoiinment: Cuộc hẹn

@@ -263,7 +263,7 @@
                  class="appointment-item">
 
                 <div class="appointment-date">
-        <span th:text="${appointment.appointmentDate}"></span>
+                <span th:text="${appointment.appointmentDate}"></span>
                     -
                     <span th:text="${appointment.appointmentTime}"></span>
                 </div>
@@ -273,6 +273,21 @@
                     -
                     <span th:text="${appointment.doctor.specialty.name}"></span>
                 </div>
+                <p>
+
+                    <strong>Trạng thái:</strong>
+                    <span th:text="${appointment.status}"></span>
+                </p>
+                <form
+                        th:if="${appointment.status.name() != 'CANCELLED'}"
+                        th:action="@{/patient/appointments/cancel/{id}(id=${appointment.id})}"
+                        method="post">
+                    <button
+                            type="submit"
+                            onclick="return confirm('Bạn có chắc muốn hủy lịch?')">
+                        Hủy lịch
+                    </button>
+                </form>
             </div>
         </div>
 

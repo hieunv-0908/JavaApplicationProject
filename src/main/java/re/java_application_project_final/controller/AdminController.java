@@ -1,6 +1,7 @@
 package re.java_application_project_final.controller;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -8,9 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import re.java_application_project_final.model.dto.CreateDoctorDto;
 import re.java_application_project_final.model.entity.Medicine;
 import re.java_application_project_final.model.entity.Role;
 import re.java_application_project_final.model.entity.User;
+import re.java_application_project_final.repository.SpecialtyRepository;
+import re.java_application_project_final.service.AdminService;
+import re.java_application_project_final.service.DoctorService;
 import re.java_application_project_final.service.MedicineService;
 
 import java.util.List;
@@ -18,13 +23,16 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
+@AllArgsConstructor
 public class AdminController {
 
     private final MedicineService medicineService;
 
-    public AdminController(MedicineService medicineService) {
-        this.medicineService = medicineService;
-    }
+    private final SpecialtyRepository specialtyRepository;
+
+    private final DoctorService doctorService;
+
+    private final AdminService adminService;
 
     private boolean isAdmin(HttpSession session) {
 
@@ -163,5 +171,19 @@ public class AdminController {
         model.addAttribute("medicines", lowStockMedicines);
         model.addAttribute("title", "Low Stock Medicines");
         return "admin/medicine-list";
+    }
+
+
+
+    @PostMapping("/create-doctor")
+    public String createDoctor(
+
+            @ModelAttribute
+            CreateDoctorDto dto
+    ) {
+
+        adminService.createDoctor(dto);
+
+        return "redirect:/admin/users";
     }
 }

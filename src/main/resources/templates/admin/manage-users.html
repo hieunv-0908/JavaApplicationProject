@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        Quản lý người dùng
+    </title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI';
+            background:#f5f7fa;
+        }
+
+        .header{
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #667eea 0%,
+                            #764ba2 100%
+                    );
+
+            color:white;
+
+            padding:20px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+            padding:40px 20px;
+        }
+
+        .top-bar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:30px;
+        }
+
+        .page-title{
+            font-size:32px;
+            font-weight:bold;
+            color:#2c3e50;
+        }
+
+        .btn{
+
+            padding:12px 22px;
+
+            border:none;
+
+            border-radius:25px;
+
+            text-decoration:none;
+
+            cursor:pointer;
+
+            font-weight:600;
+
+            transition:0.3s;
+        }
+
+        .btn-primary{
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #667eea 0%,
+                            #764ba2 100%
+                    );
+
+            color:white;
+        }
+
+        .btn-primary:hover{
+            transform:translateY(-2px);
+        }
+
+        .table-container{
+
+            background:white;
+
+            border-radius:16px;
+
+            overflow:hidden;
+
+            box-shadow:
+                    0 5px 20px
+                    rgba(0,0,0,0.08);
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+
+            background:#f8f9fa;
+
+            padding:16px;
+
+            text-align:left;
+        }
+
+        td{
+            padding:16px;
+            border-bottom:1px solid #eee;
+        }
+
+        tr:hover{
+            background:#f9fbff;
+        }
+
+        .role-badge{
+
+            padding:6px 12px;
+
+            border-radius:20px;
+
+            color:white;
+
+            font-size:13px;
+
+            font-weight:bold;
+        }
+
+        .admin{
+            background:#e74c3c;
+        }
+
+        .doctor{
+            background:#3498db;
+        }
+
+        .patient{
+            background:#2ecc71;
+        }
+
+        .status{
+
+            padding:6px 12px;
+
+            border-radius:20px;
+
+            font-size:13px;
+
+            font-weight:bold;
+        }
+
+        .active{
+            background:#d4edda;
+            color:#155724;
+        }
+
+        .inactive{
+            background:#f8d7da;
+            color:#721c24;
+        }
+
+        .action-group{
+            display:flex;
+            gap:10px;
+        }
+
+        .btn-sm{
+
+            padding:8px 14px;
+
+            font-size:14px;
+        }
+
+        .btn-edit{
+            background:#f39c12;
+            color:white;
+        }
+
+        .btn-toggle{
+            background:#2ecc71;
+            color:white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>
+        👥 Quản lý người dùng
+    </h1>
+
+</div>
+
+<div class="container">
+
+    <div class="top-bar">
+
+        <h2 class="page-title">
+
+            Danh sách tài khoản
+
+        </h2>
+
+        <a
+                th:href=
+                        "@{/admin/users/create-doctor}"
+
+                class="btn btn-primary">
+
+            ➕ Tạo tài khoản bác sĩ
+
+        </a>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Username</th>
+
+                <th>Email</th>
+
+                <th>Role</th>
+
+                <th>Trạng thái</th>
+
+                <th>Action</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="user : ${users}">
+
+                <td th:text="${user.id}">
+                </td>
+
+                <td th:text="${user.username}">
+                </td>
+
+                <td th:text="${user.email}">
+                </td>
+
+                <td>
+
+                    <span
+
+                            th:class="
+                            'role-badge ' +
+
+                            ${#strings.toLowerCase(
+                            user.role.name()
+                            )}"
+
+                            th:text="${user.role}">
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span
+
+                            th:class=
+                                    "'status ' +
+
+                            (${user.enabled}
+                            ? 'active'
+                            : 'inactive')"
+
+                            th:text=
+                                    "${user.enabled}
+                            ? 'Hoạt động'
+                            : 'Bị khóa'">
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="action-group">
+
+                        <a
+
+                                th:href=
+                                        "@{/admin/users/edit/{id}
+                                (id=${user.id})}"
+
+                                class=
+                                        "btn btn-edit btn-sm">
+
+                            ✏️ Sửa
+
+                        </a>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

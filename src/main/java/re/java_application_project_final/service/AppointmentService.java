@@ -11,6 +11,7 @@ import re.java_application_project_final.repository.AppointmentRepository;
 import re.java_application_project_final.repository.DoctorRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -82,14 +83,14 @@ public class AppointmentService {
 
         boolean exists =
                 appointmentRepository
-                        .existsByDoctorAndAppointmentDateAndAppointmentTime(
+                        .existsByDoctorAndAppointmentDateAndAppointmentTimeAndStatusNot(
                                 doctor,
                                 date,
-                                time
+                                time,
+                                AppointmentStatus.CANCELLED
                         );
 
         if (exists) {
-
             throw new RuntimeException(
                     "Khung giờ này đã có người đặt"
             );
@@ -104,9 +105,10 @@ public class AppointmentService {
                         .status(AppointmentStatus.PENDING)
                         .note(note)
                         .build();
-
         appointmentRepository.save(appointment);
     }
+
+
 
     public List<LocalTime>
     getAvailableSlots(
@@ -121,9 +123,10 @@ public class AppointmentService {
 
         List<Appointment> appointments =
                 appointmentRepository
-                        .findByDoctorAndAppointmentDate(
-                                doctor,
-                                date
+                        .findByDoctorIdAndAppointmentDateAndStatusNot(
+                                doctorId,
+                                date,
+                                AppointmentStatus.CANCELLED
                         );
 
         List<LocalTime> bookedSlots =
@@ -144,17 +147,14 @@ public class AppointmentService {
     public List<Appointment> getAppointmentsByPatient(
             Patient patient
     ) {
-
         return appointmentRepository
                 .findByPatientOrderByAppointmentDateAscAppointmentTimeAsc(
                         patient
                 );
     }
-
     public List<Appointment> getAppointmentsByDoctor(
             Doctor doctor
     ) {
-
         return appointmentRepository
                 .findByDoctorOrderByAppointmentDateAscAppointmentTimeAsc(
                         doctor
@@ -171,5 +171,71 @@ public class AppointmentService {
                                 "Appointment not found"
                         )
                 );
+    }
+    @Transactional
+    public void cancelAppointment(
+            Long appointmentId,
+            Patient patient
+    ) {
+        Appointment appointment =
+                appointmentRepository
+                        .findByIdAndPatientId(
+                                appointmentId,
+                                patient.getId()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Không tìm thấy lịch khám"
+                                )
+                        );
+        if (
+                appointment.getStatus()
+                        == AppointmentStatus.CANCELLED
+        ) {
+            throw new RuntimeException(
+                    "Lịch khám đã bị hủy"
+            );
+        }
+        if (
+                appointment.getStatus()
+                        == AppointmentStatus.CONFIRMED
+        ) {
+            throw new RuntimeException(
+                    "Lịch khám đã được xác nhận và không thể hủy"
+            );
+        }
+
+        if (
+                appointment.getStatus()
+                        == AppointmentStatus.COMPLETED
+        ) {
+
+            throw new RuntimeException(
+                    "Lịch khám đã hoàn thành"
+            );
+        }
+        LocalDateTime appointmentDateTime =
+                LocalDateTime.of(
+                        appointment.getAppointmentDate(),
+                        appointment.getAppointmentTime()
+                );
+        LocalDateTime now =
+                LocalDateTime.now();
+        if (
+                now.plusHours(24)
+                        .isAfter(
+                                appointmentDateTime
+                        )
+        ) {
+            throw new RuntimeException(
+                    "Chỉ được hủy trước 24 giờ"
+            );
+        }
+        appointment.setStatus(
+                AppointmentStatus.CANCELLED
+        );
+        appointmentRepository.save(
+                appointment
+        );
     }
 }

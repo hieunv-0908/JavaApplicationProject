@@ -1,86 +1,442 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Lịch sử khám bệnh</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial,sans-serif;
+            background:#f4f7fb;
+            padding:40px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+        }
+
+        .page-title{
+            font-size:32px;
+            font-weight:bold;
+            color:#2c3e50;
+            margin-bottom:30px;
+        }
+
+        .table-wrapper{
+            background:white;
+            border-radius:14px;
+            overflow:hidden;
+            box-shadow:0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        thead{
+            background:#3498db;
+            color:white;
+        }
+
+        th,
+        td{
+            padding:16px;
+            text-align:left;
+            border-bottom:1px solid #ecf0f1;
+        }
+
+        tbody tr:hover{
+            background:#f8fbff;
+        }
+
+        .status{
+            padding:6px 12px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:bold;
+            background:#d4edda;
+            color:#155724;
+            display:inline-block;
+        }
+
+        .detail-btn{
+            padding:8px 16px;
+            border:none;
+            border-radius:8px;
+            background:#3498db;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .detail-btn:hover{
+            background:#2980b9;
+        }
+
+        /*
+            MODAL
+         */
+
+        .modal{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.5);
+            justify-content:center;
+            align-items:center;
+            z-index:999;
+        }
+
+        .modal-content{
+            width:90%;
+            max-width:800px;
+            max-height:90vh;
+            overflow-y:auto;
+            background:white;
+            border-radius:16px;
+            padding:30px;
+            position:relative;
+        }
+
+        .close-btn{
+            position:absolute;
+            top:15px;
+            right:20px;
+            font-size:24px;
+            cursor:pointer;
+            color:#7f8c8d;
+        }
+
+        .section-title{
+            margin-top:25px;
+            margin-bottom:15px;
+            color:#2c3e50;
+            font-size:22px;
+        }
+
+        .info-row{
+            margin-bottom:12px;
+            line-height:1.6;
+        }
+
+        .medicine-table{
+            width:100%;
+            margin-top:15px;
+            border-collapse:collapse;
+        }
+
+        .medicine-table th{
+            background:#2ecc71;
+            color:white;
+        }
+
+        .medicine-table td,
+        .medicine-table th{
+            padding:12px;
+            border:1px solid #ddd;
+        }
+
+        .empty-box{
+            background:white;
+            padding:40px;
+            text-align:center;
+            border-radius:14px;
+            color:#7f8c8d;
+            box-shadow:0 4px 20px rgba(0,0,0,0.08);
+        }
+
+    </style>
 </head>
+
 <body>
-<div class="record"
-     th:each="history : ${medicalHistories}">
 
-    <h2>
-        Lần khám ngày
-        <span th:text="${history.appointmentDate}">
-        </span>
-    </h2>
+<div class="container">
 
-    <p>
-        <strong>Bác sĩ:</strong>
+    <h1 class="page-title">
+        📋 Lịch sử khám bệnh
+    </h1>
 
-        <span th:text="${history.doctorName}">
-        </span>
-    </p>
+    <div th:if="${#lists.isEmpty(medicalHistories)}"
+         class="empty-box">
 
-    <p>
-        <strong>Chuyên khoa:</strong>
+        Chưa có lịch sử khám bệnh
 
-        <span th:text="${history.specialtyName}">
-        </span>
-    </p>
+    </div>
 
-    <p>
-        <strong>Triệu chứng:</strong>
+    <div th:if="${!#lists.isEmpty(medicalHistories)}"
+         class="table-wrapper">
 
-        <span th:text="${history.symptoms}">
-        </span>
-    </p>
+        <table>
 
-    <p>
-        <strong>Chẩn đoán:</strong>
+            <thead>
 
-        <span th:text="${history.diagnosis}">
-        </span>
-    </p>
+            <tr>
+                <th>Ngày khám</th>
+                <th>Bác sĩ</th>
+                <th>Chuyên khoa</th>
+                <th>Chẩn đoán</th>
+                <th>Chi tiết</th>
+            </tr>
 
-    <p>
-        <strong>Kết luận:</strong>
+            </thead>
 
-        <span th:text="${history.conclusion}">
-        </span>
-    </p>
+            <tbody>
 
-    <h3>Danh sách thuốc</h3>
+            <tr
+                    th:each="history,iter : ${medicalHistories}">
 
-    <ul>
+                <td th:text="${history.appointmentDate}">
+                </td>
 
-        <li th:each="medicine : ${history.medicines}">
+                <td th:text="${history.doctorName}">
+                </td>
 
-            <strong>
-                <span th:text="${medicine.medicineName}">
-                </span>
-            </strong>
+                <td th:text="${history.specialtyName}">
+                </td>
 
-            - SL:
+                <td th:text="${history.diagnosis}">
+                </td>
 
-            <span th:text="${medicine.quantity}">
-            </span>
+                <td>
 
-            - Liều dùng:
+                    <button
+                            type="button"
 
-            <span th:text="${medicine.dosage}">
-            </span>
+                            class="detail-btn"
 
-            - HDSD:
+                            th:attr="
+                            data-modal='modal-'
+                            + ${iter.index}">
 
-            <span
-                    th:text=
-                            "${medicine.usageInstructions}">
-            </span>
+                        Xem chi tiết
 
-        </li>
+                    </button>
 
-    </ul>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
+
+<!-- MODALS -->
+
+<div
+        th:each="history,iter : ${medicalHistories}"
+
+        class="modal"
+
+        th:id="'modal-' + ${iter.index}">
+
+    <div class="modal-content">
+
+        <span class="close-btn">
+            &times;
+        </span>
+
+        <h2>
+            🏥 Chi tiết lần khám
+        </h2>
+
+        <h3 class="section-title">
+            Thông tin khám
+        </h3>
+
+        <div class="info-row">
+
+            <strong>Ngày khám:</strong>
+
+            <span th:text="${history.appointmentDate}">
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <strong>Bác sĩ:</strong>
+
+            <span th:text="${history.doctorName}">
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <strong>Chuyên khoa:</strong>
+
+            <span th:text="${history.specialtyName}">
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <strong>Triệu chứng:</strong>
+
+            <span th:text="${history.symptoms}">
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <strong>Chẩn đoán:</strong>
+
+            <span th:text="${history.diagnosis}">
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <strong>Kết luận:</strong>
+
+            <span th:text="${history.conclusion}">
+            </span>
+
+        </div>
+
+        <h3 class="section-title">
+            💊 Danh sách thuốc
+        </h3>
+
+        <table class="medicine-table">
+
+            <thead>
+
+            <tr>
+                <th>Tên thuốc</th>
+                <th>Số lượng</th>
+                <th>Liều dùng</th>
+                <th>Hướng dẫn</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr
+                    th:each="medicine
+                    : ${history.medicines}">
+
+                <td th:text="${medicine.medicineName}">
+                </td>
+
+                <td th:text="${medicine.quantity}">
+                </td>
+
+                <td th:text="${medicine.dosage}">
+                </td>
+
+                <td
+                        th:text=
+                                "${medicine.usageInstructions}">
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+    const buttons =
+        document.querySelectorAll(
+            ".detail-btn"
+        );
+
+    buttons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+
+            function(){
+
+                const modalId =
+                    this.dataset.modal;
+
+                document
+                    .getElementById(
+                        modalId
+                    )
+
+                    .style.display =
+                    "flex";
+
+            }
+        );
+
+    });
+
+    const closeButtons =
+        document.querySelectorAll(
+            ".close-btn"
+        );
+
+    closeButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+
+            function(){
+
+                this.closest(".modal")
+                    .style.display =
+                    "none";
+
+            }
+        );
+
+    });
+
+    window.addEventListener(
+        "click",
+
+        function(e){
+
+            document
+                .querySelectorAll(
+                    ".modal"
+                )
+
+                .forEach(modal => {
+
+                    if(e.target === modal){
+
+                        modal.style.display =
+                            "none";
+                    }
+
+                });
+
+        }
+    );
+
+</script>
+
 </body>
 </html>
