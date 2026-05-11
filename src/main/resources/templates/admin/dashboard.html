@@ -247,23 +247,27 @@
             <div class="action-card">
                 <h3 class="action-title">📈 Báo cáo</h3>
                 <p class="action-description">Xem báo cáo và thống kê hệ thống</p>
-                <a href="#" class="action-btn">Xem báo cáo</a>
+                <a th:href="@{/admin/statistical}">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Statistical
+                </a>
             </div>
-            <h3 class="action-title">
-                💉 Cấp phát thuốc
-            </h3>
 
-            <p class="action-description">
-                Kiểm tra tồn kho và xác nhận phát thuốc
-                cho bệnh nhân
-            </p>
+            <div class="action-card">
+                <h3 class="action-title">
+                    💉 Cấp phát thuốc
+                </h3>
 
-            <a th:href="@{/admin/dispense}"
-               class="action-btn">
+                <p class="action-description">
+                    Kiểm tra tồn kho và xác nhận phát thuốc
+                    cho bệnh nhân
+                </p>
 
-                Cấp phát thuốc
-
-            </a>
+                <a th:href="@{/admin/dispense}"
+                   class="action-btn">
+                    Cấp phát thuốc
+                </a>
+            </div>
 
         </div>
     </div>

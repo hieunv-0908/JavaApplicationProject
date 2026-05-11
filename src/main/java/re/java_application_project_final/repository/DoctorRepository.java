@@ -1,6 +1,7 @@
 package re.java_application_project_final.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import re.java_application_project_final.model.entity.Doctor;
 import re.java_application_project_final.model.entity.Specialty;
@@ -17,4 +18,9 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findBySpecialtyId(
             Long specialtyId
     );
+
+    @Query("""
+SELECT COUNT(d.id) FROM Doctor d
+""")
+    Long countDoctors();
 }

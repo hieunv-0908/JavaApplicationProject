@@ -23,13 +23,9 @@ public class LoginController {
 
     @PostMapping
     public String login(
-
             @RequestParam String username,
-
             @RequestParam String password,
-
             HttpSession session,
-
             Model model
     ) {
 
@@ -40,12 +36,10 @@ public class LoginController {
                 );
 
         if (user == null) {
-
             model.addAttribute(
                     "error",
                     "Sai tài khoản hoặc mật khẩu"
             );
-
             return "login-page";
         }
 
@@ -55,23 +49,18 @@ public class LoginController {
         );
 
         if (user.getRole() == Role.ADMIN) {
-
             return "redirect:/admin/dashboard";
         }
 
         if (user.getRole() == Role.DOCTOR) {
-
             return "redirect:/doctor/dashboard";
         }
-
         return "redirect:/patient/dashboard";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-
         session.invalidate();
-
         return "redirect:/login";
     }
 }

@@ -99,6 +99,6 @@ public class PatientController {
 
         model.addAttribute("username", user.getUsername());
 
-        return "patient/medical-records";
+        return "patient/medical-history";
     }
 }

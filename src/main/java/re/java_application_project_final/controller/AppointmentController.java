@@ -2,6 +2,7 @@ package re.java_application_project_final.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -46,17 +47,26 @@ public class AppointmentController {
             HttpSession session,
 
             @RequestParam Long doctorId,
-            @RequestParam LocalDate appointmentDate,
-            @RequestParam LocalTime appointmentTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate appointmentDate,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm") LocalTime appointmentTime,
             @RequestParam(required = false) String note,
 
             RedirectAttributes redirectAttributes
     ) {
 
+        System.out.println("=== BOOK APPOINTMENT REQUEST ===");
+        System.out.println("Doctor ID: " + doctorId);
+        System.out.println("Appointment Date: " + appointmentDate);
+        System.out.println("Appointment Time: " + appointmentTime);
+        System.out.println("Note: " + note);
+
         User user =
                 (User) session.getAttribute("loggedInUser");
 
+        System.out.println("User from session: " + user);
+
         if (user == null) {
+            System.out.println("User is null, redirecting to login");
             return "redirect:/login";
         }
 
@@ -143,35 +153,26 @@ public class AppointmentController {
 
     @PostMapping("/cancel/{id}")
     public String cancelAppointment(
-
             @PathVariable Long id,
-
             HttpSession session,
-
             RedirectAttributes redirectAttributes
     ) {
-
         User user =
                 (User) session.getAttribute(
                         "loggedInUser"
                 );
 
         if (user == null) {
-
             return "redirect:/login";
         }
 
         try {
-
             Patient patient =
                     patientService
                             .getPatientByUser(user);
 
             appointmentService
-                    .cancelAppointment(
-                            id,
-                            patient
-                    );
+                    .cancelAppointment(id, patient);
 
             redirectAttributes
                     .addFlashAttribute(
@@ -180,7 +181,6 @@ public class AppointmentController {
                     );
 
         } catch (Exception e) {
-
             redirectAttributes
                     .addFlashAttribute(
                             "error",

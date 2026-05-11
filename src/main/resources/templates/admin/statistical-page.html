@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f7fb;
+            display:flex;
+            min-height:100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar{
+            width:260px;
+            background:#1e293b;
+            color:white;
+            padding:25px 20px;
+        }
+
+        .sidebar h2{
+            margin-bottom:35px;
+            text-align:center;
+            font-size:24px;
+        }
+
+        .sidebar a{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            text-decoration:none;
+            color:white;
+            padding:14px;
+            border-radius:10px;
+            margin-bottom:10px;
+            transition:0.3s;
+        }
+
+        .sidebar a:hover{
+            background:#334155;
+        }
+
+        /* MAIN */
+
+        .main{
+            flex:1;
+            padding:30px;
+        }
+
+        .header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:30px;
+        }
+
+        .header h1{
+            color:#1e293b;
+        }
+
+        .admin-info{
+            background:white;
+            padding:12px 18px;
+            border-radius:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* CARDS */
+
+        .card-container{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+            margin-bottom:30px;
+        }
+
+        .card{
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h3{
+            font-size:16px;
+            color:#64748b;
+            margin-bottom:10px;
+        }
+
+        .card .value{
+            font-size:30px;
+            font-weight:bold;
+            color:#0f172a;
+        }
+
+        .card i{
+            font-size:35px;
+            margin-top:15px;
+            color:#2563eb;
+        }
+
+        /* CHARTS */
+
+        .chart-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:25px;
+            margin-bottom:30px;
+        }
+
+        .chart-card{
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .chart-card h2{
+            margin-bottom:20px;
+            color:#1e293b;
+            font-size:20px;
+        }
+
+        /* TABLE */
+
+        .table-card{
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .table-card h2{
+            margin-bottom:20px;
+            color:#1e293b;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#2563eb;
+            color:white;
+            padding:14px;
+            text-align:left;
+        }
+
+        td{
+            padding:14px;
+            border-bottom:1px solid #e2e8f0;
+        }
+
+        tr:hover{
+            background:#f8fafc;
+        }
+
+        .status{
+            padding:6px 12px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:bold;
+        }
+
+        .active{
+            background:#dcfce7;
+            color:#166534;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:1000px){
+
+            .chart-grid{
+                grid-template-columns:1fr;
+            }
+
+        }
+
+        @media(max-width:768px){
+
+            body{
+                flex-direction:column;
+            }
+
+            .sidebar{
+                width:100%;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <h2>Clinic Admin</h2>
+
+    <a th:href="@{/admin/dashboard}">
+        <i class="fa-solid fa-chart-line"></i>
+        Dashboard
+    </a>
+
+    <a th:href="@{/admin/users}">
+        <i class="fa-solid fa-users"></i>
+        Users
+    </a>
+
+    <a th:href="@{/admin/dispense}">
+        <i class="fa-solid fa-capsules"></i>
+        Dispense Medicine
+    </a>
+
+    <a th:href="@{/admin/medicines}">
+        <i class="fa-solid fa-pills"></i>
+        Medicines
+    </a>
+
+    <a href="#">
+        <i class="fa-solid fa-calendar-check"></i>
+        Appointments
+    </a>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>Admin Dashboard</h1>
+
+        <div class="admin-info">
+            Welcome,
+            <strong th:text="${username}">Admin</strong>
+        </div>
+
+    </div>
+
+    <!-- STAT CARDS -->
+
+    <div class="card-container">
+
+        <div class="card">
+            <h3>Total Revenue</h3>
+
+            <div class="value"
+                 th:text="${totalRevenue}">
+                12000000
+            </div>
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+
+        <div class="card">
+            <h3>Total Appointments</h3>
+
+            <div class="value"
+                 th:text="${totalAppointments}">
+                320
+            </div>
+
+            <i class="fa-solid fa-calendar-days"></i>
+        </div>
+
+        <div class="card">
+            <h3>Total Doctors</h3>
+
+            <div class="value"
+                 th:text="${totalDoctors}">
+                18
+            </div>
+
+            <i class="fa-solid fa-user-doctor"></i>
+        </div>
+
+        <div class="card">
+            <h3>Low Stock Medicines</h3>
+
+            <div class="value"
+                 th:text="${lowStockCount}">
+                5
+            </div>
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+
+    <div class="chart-grid">
+
+        <!-- REVENUE CHART -->
+
+        <div class="chart-card">
+
+            <h2>Monthly Revenue</h2>
+
+            <canvas id="revenueChart"></canvas>
+
+        </div>
+
+        <!-- TOP DOCTOR CHART -->
+
+        <div class="chart-card">
+
+            <h2>Top 5 Doctors</h2>
+
+            <canvas id="doctorChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <h2>Top Doctors Details</h2>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Specialty</th>
+                <th>Total Appointments</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="doctor : ${topDoctors}">
+
+                <td th:text="${doctor.fullName}">
+                    Doctor Name
+                </td>
+
+                <td th:text="${doctor.specialtyName}">
+                    Cardiology
+                </td>
+
+                <td th:text="${doctor.totalAppointments}">
+                    50
+                </td>
+
+                <td>
+                        <span class="status active">
+                            Active
+                        </span>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+
+<script th:inline="javascript">
+
+    /* =========================
+       MONTHLY REVENUE CHART
+    ========================== */
+
+    const revenues = /*[[${revenues}]]*/ [];
+
+    const revenueLabels = revenues.map(item =>
+        "Month " + item.month
+    );
+
+    const revenueData = revenues.map(item =>
+        item.revenue
+    );
+
+    new Chart(document.getElementById('revenueChart'), {
+
+        type: 'bar',
+
+        data: {
+
+            labels: revenueLabels,
+
+            datasets: [{
+                label: 'Revenue',
+                data: revenueData
+            }]
+
+        }
+
+    });
+
+
+    /* =========================
+       TOP DOCTOR CHART
+    ========================== */
+
+    const topDoctors = /*[[${topDoctors}]]*/ [];
+    const doctorLabels = topDoctors.map(item =>
+        item.fullName
+    );
+
+    const doctorData = topDoctors.map(item =>
+        item.totalAppointments
+    );
+
+    new Chart(document.getElementById('doctorChart'), {
+        type: 'pie',
+        data: {
+            labels: doctorLabels,
+            datasets: [{
+                label: 'Appointments',
+                data: doctorData
+            }]
+
+        }
+    });
+</script>
+</body>
+</html>

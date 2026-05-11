@@ -48,6 +48,13 @@ public class AppointmentService {
             String note
     ) {
 
+        System.out.println("=== BOOK APPOINTMENT SERVICE ===");
+        System.out.println("Patient: " + patient.getFullName());
+        System.out.println("Doctor ID: " + doctorId);
+        System.out.println("Date: " + date);
+        System.out.println("Time: " + time);
+        System.out.println("Note: " + note);
+
         Doctor doctor = doctorRepository
                 .findById(doctorId)
                 .orElseThrow(() ->
@@ -55,6 +62,8 @@ public class AppointmentService {
                                 "Doctor not found"
                         )
                 );
+
+        System.out.println("Doctor found: " + doctor.getFullName());
 
         // CHECK NGÀY GIỜ QUÁ KHỨ
 
@@ -102,6 +111,9 @@ public class AppointmentService {
                         .doctor(doctor)
                         .appointmentDate(date)
                         .appointmentTime(time)
+                        .consultationFee(
+                                java.math.BigDecimal.valueOf(200000)
+                        )
                         .status(AppointmentStatus.PENDING)
                         .note(note)
                         .build();
@@ -188,17 +200,12 @@ public class AppointmentService {
                                         "Không tìm thấy lịch khám"
                                 )
                         );
-        if (
-                appointment.getStatus()
-                        == AppointmentStatus.CANCELLED
-        ) {
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
             throw new RuntimeException(
                     "Lịch khám đã bị hủy"
             );
         }
-        if (
-                appointment.getStatus()
-                        == AppointmentStatus.CONFIRMED
+        if (appointment.getStatus() == AppointmentStatus.CONFIRMED
         ) {
             throw new RuntimeException(
                     "Lịch khám đã được xác nhận và không thể hủy"

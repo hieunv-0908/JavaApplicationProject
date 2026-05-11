@@ -3,6 +3,7 @@ package re.java_application_project_final.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -33,6 +34,8 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
+    private BigDecimal consultationFee;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)

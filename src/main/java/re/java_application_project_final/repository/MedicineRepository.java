@@ -23,4 +23,9 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     
     @Query("SELECT m FROM Medicine m WHERE m.quantity <= :threshold AND m.active = true")
     List<Medicine> findLowStockMedicines(@Param("threshold") Integer threshold);
+
+    @Query(""" 
+SELECT COUNT(m.id) FROM Medicine m WHERE m.quantity < 10 
+""")
+    Long countLowStockMedicines();
 }
