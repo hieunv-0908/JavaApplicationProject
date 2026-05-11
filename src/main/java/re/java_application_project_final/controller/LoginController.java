@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import re.java_application_project_final.model.entity.Role;
 import re.java_application_project_final.model.entity.User;
 import re.java_application_project_final.service.UserService;
 
@@ -22,15 +23,24 @@ public class LoginController {
 
     @PostMapping
     public String login(
+
             @RequestParam String username,
+
             @RequestParam String password,
+
             HttpSession session,
+
             Model model
     ) {
 
-        User user = userService.login(username, password);
+        User user =
+                userService.login(
+                        username,
+                        password
+                );
 
         if (user == null) {
+
             model.addAttribute(
                     "error",
                     "Sai tài khoản hoặc mật khẩu"
@@ -39,9 +49,22 @@ public class LoginController {
             return "login-page";
         }
 
-        session.setAttribute("loggedInUser", user);
+        session.setAttribute(
+                "loggedInUser",
+                user
+        );
 
-        return "redirect:/dashboard";
+        if (user.getRole() == Role.ADMIN) {
+
+            return "redirect:/admin/dashboard";
+        }
+
+        if (user.getRole() == Role.DOCTOR) {
+
+            return "redirect:/doctor/dashboard";
+        }
+
+        return "redirect:/patient/dashboard";
     }
 
     @GetMapping("/logout")

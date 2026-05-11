@@ -14,6 +14,7 @@ import re.java_application_project_final.model.entity.Medicine;
 import re.java_application_project_final.model.entity.Role;
 import re.java_application_project_final.model.entity.User;
 import re.java_application_project_final.repository.SpecialtyRepository;
+import re.java_application_project_final.repository.UserRepository;
 import re.java_application_project_final.service.AdminService;
 import re.java_application_project_final.service.DoctorService;
 import re.java_application_project_final.service.MedicineService;
@@ -27,11 +28,9 @@ import java.util.Optional;
 public class AdminController {
 
     private final MedicineService medicineService;
-
     private final SpecialtyRepository specialtyRepository;
-
     private final DoctorService doctorService;
-
+    private final UserRepository userRepository;
     private final AdminService adminService;
 
     private boolean isAdmin(HttpSession session) {
@@ -171,19 +170,5 @@ public class AdminController {
         model.addAttribute("medicines", lowStockMedicines);
         model.addAttribute("title", "Low Stock Medicines");
         return "admin/medicine-list";
-    }
-
-
-
-    @PostMapping("/create-doctor")
-    public String createDoctor(
-
-            @ModelAttribute
-            CreateDoctorDto dto
-    ) {
-
-        adminService.createDoctor(dto);
-
-        return "redirect:/admin/users";
     }
 }
