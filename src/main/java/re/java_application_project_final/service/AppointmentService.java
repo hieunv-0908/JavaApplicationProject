@@ -10,6 +10,7 @@ import re.java_application_project_final.model.entity.Patient;
 import re.java_application_project_final.repository.AppointmentRepository;
 import re.java_application_project_final.repository.DoctorRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,6 +23,8 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     private final DoctorRepository doctorRepository;
+
+    private final MailService mailService;
 
     private final List<LocalTime> TIME_SLOTS =
             List.of(
@@ -116,7 +119,7 @@ public class AppointmentService {
                         .appointmentDate(date)
                         .appointmentTime(time)
                         .consultationFee(
-                                java.math.BigDecimal.valueOf(200000)
+                                BigDecimal.valueOf(200000)
                         )
                         .status(
                                 AppointmentStatus.PENDING
@@ -124,9 +127,22 @@ public class AppointmentService {
                         .note(note)
                         .build();
 
-        appointmentRepository.save(
-                appointment
-        );
+        Appointment savedAppointment =
+                appointmentRepository.save(
+                        appointment
+                );
+
+        if (
+                patient.getUser().getEmail()
+                        != null
+        ) {
+
+            mailService.sendAppointmentEmail(
+                    patient.getUser().getEmail(),
+                    patient.getFullName(),
+                    doctor.getFullName()
+            );
+        }
     }
 
 
