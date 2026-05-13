@@ -98,6 +98,7 @@ public class AppointmentController {
 
         return "redirect:/patient/dashboard";
     }
+
     @GetMapping("/doctors-by-specialty")
     @ResponseBody
     public List<DoctorOptionDto>

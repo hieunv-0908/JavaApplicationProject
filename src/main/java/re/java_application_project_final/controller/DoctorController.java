@@ -33,7 +33,6 @@ public class DoctorController {
 
     private final MedicineService medicineService;
 
-    // Hàm kiểm tra doctor
     private boolean isDoctor(HttpSession session) {
 
         User user =

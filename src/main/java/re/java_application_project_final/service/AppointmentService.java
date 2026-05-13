@@ -38,7 +38,6 @@ public class AppointmentService {
                     LocalTime.of(14,30),
                     LocalTime.of(15,0)
             );
-
     @Transactional
     public void bookAppointment(
             Patient patient,
@@ -55,36 +54,40 @@ public class AppointmentService {
         System.out.println("Time: " + time);
         System.out.println("Note: " + note);
 
-        Doctor doctor = doctorRepository
-                .findById(doctorId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Doctor not found"
-                        )
+        Doctor doctor =
+                doctorRepository
+                        .findById(doctorId)
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Không tìm thấy bác sĩ"
+                                )
+                        );
+
+        System.out.println(
+                "Doctor found: "
+                        + doctor.getFullName()
+        );
+
+        // THỜI GIAN LỊCH KHÁM
+
+        LocalDateTime appointmentDateTime =
+                LocalDateTime.of(
+                        date,
+                        time
                 );
 
-        System.out.println("Doctor found: " + doctor.getFullName());
+        // PHẢI ĐẶT TRƯỚC ÍT NHẤT 24 GIỜ
 
-        // CHECK NGÀY GIỜ QUÁ KHỨ
-
-        LocalDate today = LocalDate.now();
-
-        LocalTime now = LocalTime.now();
-
-        // Ngày quá khứ
-        if (date.isBefore(today)) {
+        if (
+                appointmentDateTime.isBefore(
+                        LocalDateTime.now()
+                                .plusHours(24)
+                )
+        ) {
 
             throw new RuntimeException(
-                    "Không thể đặt lịch trong quá khứ"
-            );
-        }
-
-        // Cùng ngày nhưng giờ quá khứ
-        if (date.isEqual(today)
-                && time.isBefore(now)) {
-
-            throw new RuntimeException(
-                    "Không thể đặt giờ trong quá khứ"
+                    "Chỉ được đặt lịch trước ít nhất 24 giờ"
             );
         }
 
@@ -100,6 +103,7 @@ public class AppointmentService {
                         );
 
         if (exists) {
+
             throw new RuntimeException(
                     "Khung giờ này đã có người đặt"
             );
@@ -114,12 +118,16 @@ public class AppointmentService {
                         .consultationFee(
                                 java.math.BigDecimal.valueOf(200000)
                         )
-                        .status(AppointmentStatus.PENDING)
+                        .status(
+                                AppointmentStatus.PENDING
+                        )
                         .note(note)
                         .build();
-        appointmentRepository.save(appointment);
-    }
 
+        appointmentRepository.save(
+                appointment
+        );
+    }
 
 
     public List<LocalTime>
@@ -148,11 +156,30 @@ public class AppointmentService {
                         )
                         .toList();
 
+        LocalDateTime now =
+                LocalDateTime.now();
+
         return TIME_SLOTS.stream()
+
+                .filter(slot -> {
+
+                    LocalDateTime slotDateTime =
+                            LocalDateTime.of(
+                                    date,
+                                    slot
+                            );
+
+                    // phải trước ít nhất 24h
+                    return slotDateTime.isAfter(
+                            now.plusHours(24)
+                    );
+                })
+
                 .filter(
                         slot ->
                                 !bookedSlots.contains(slot)
                 )
+
                 .toList();
     }
 
@@ -184,11 +211,13 @@ public class AppointmentService {
                         )
                 );
     }
+
     @Transactional
     public void cancelAppointment(
             Long appointmentId,
             Patient patient
     ) {
+
         Appointment appointment =
                 appointmentRepository
                         .findByIdAndPatientId(
@@ -200,49 +229,53 @@ public class AppointmentService {
                                         "Không tìm thấy lịch khám"
                                 )
                         );
-        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
-            throw new RuntimeException(
-                    "Lịch khám đã bị hủy"
-            );
-        }
-        if (appointment.getStatus() == AppointmentStatus.CONFIRMED
-        ) {
-            throw new RuntimeException(
-                    "Lịch khám đã được xác nhận và không thể hủy"
-            );
-        }
 
+        // Chỉ cho hủy lịch đang chờ xác nhận
         if (
                 appointment.getStatus()
-                        == AppointmentStatus.COMPLETED
+                        != AppointmentStatus.PENDING
         ) {
 
             throw new RuntimeException(
-                    "Lịch khám đã hoàn thành"
+                    "Không thể hủy lịch này"
             );
         }
+
+        // Thời gian lịch khám
         LocalDateTime appointmentDateTime =
                 LocalDateTime.of(
                         appointment.getAppointmentDate(),
                         appointment.getAppointmentTime()
                 );
-        LocalDateTime now =
-                LocalDateTime.now();
+
+        // Không cho hủy lịch đã diễn ra
         if (
-                now.plusHours(24)
+                appointmentDateTime.isBefore(
+                        LocalDateTime.now()
+                )
+        ) {
+
+            throw new RuntimeException(
+                    "Lịch khám đã diễn ra"
+            );
+        }
+
+        // Phải hủy trước ít nhất 24 giờ
+        if (
+                LocalDateTime.now()
+                        .plusHours(24)
                         .isAfter(
                                 appointmentDateTime
                         )
         ) {
+
             throw new RuntimeException(
                     "Chỉ được hủy trước 24 giờ"
             );
         }
+
         appointment.setStatus(
                 AppointmentStatus.CANCELLED
-        );
-        appointmentRepository.save(
-                appointment
         );
     }
 }

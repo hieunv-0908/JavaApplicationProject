@@ -28,7 +28,6 @@ public class PatientController {
 
         User user =
                 (User) session.getAttribute("loggedInUser");
-
         return user != null
                 && user.getRole() == Role.PATIENT;
     }

@@ -29,11 +29,7 @@ public class LoginController {
             Model model
     ) {
 
-        User user =
-                userService.login(
-                        username,
-                        password
-                );
+        User user = userService.login(username, password);
 
         if (user == null) {
             model.addAttribute(
